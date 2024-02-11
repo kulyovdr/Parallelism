@@ -1,0 +1,3 @@
+/home/d.kulev/Task_1/CMake/CMakeFiles/Task1Double.dir
+/home/d.kulev/Task_1/CMake/CMakeFiles/edit_cache.dir
+/home/d.kulev/Task_1/CMake/CMakeFiles/rebuild_cache.dir
