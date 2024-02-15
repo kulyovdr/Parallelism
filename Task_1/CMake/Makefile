@@ -129,20 +129,29 @@ Task1Double/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/build
 .PHONY : Task1Double/fast
 
-# target to build an object file
-Task_1.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.o
+Task_1.o: Task_1.cpp.o
 .PHONY : Task_1.o
 
-# target to preprocess a source file
-Task_1.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.i
+# target to build an object file
+Task_1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.cpp.o
+.PHONY : Task_1.cpp.o
+
+Task_1.i: Task_1.cpp.i
 .PHONY : Task_1.i
 
-# target to generate assembly for a file
-Task_1.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.s
+# target to preprocess a source file
+Task_1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.cpp.i
+.PHONY : Task_1.cpp.i
+
+Task_1.s: Task_1.cpp.s
 .PHONY : Task_1.s
+
+# target to generate assembly for a file
+Task_1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.cpp.s
+.PHONY : Task_1.cpp.s
 
 # Help Target
 help:

@@ -18,12 +18,10 @@ using namespace std;
 my_type sin_array(my_type* arr)
 {
     my_type sum = 0;
-    my_type sinus;
     for (int i = 0; i < LEN; i++)
     {
-        sinus = sinus((2 * M_PI) * (i / (LEN - 1)));
-        arr[i] = sinus;
-        sum += sinus;
+        arr[i] = sinus((2 * M_PI) * (i / LEN));
+        sum += arr[i];
     }
     return sum;
 }

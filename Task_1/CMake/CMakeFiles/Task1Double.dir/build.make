@@ -69,28 +69,28 @@ include CMakeFiles/Task1Double.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Task1Double.dir/flags.make
 
-CMakeFiles/Task1Double.dir/Task_1.o: CMakeFiles/Task1Double.dir/flags.make
-CMakeFiles/Task1Double.dir/Task_1.o: Task_1.cpp
-CMakeFiles/Task1Double.dir/Task_1.o: CMakeFiles/Task1Double.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/d.kulev/Task_1/CMake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Task1Double.dir/Task_1.o"
-	/opt/nvidia/hpc_sdk/Linux_x86_64/23.11/compilers/bin/nvc++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Task1Double.dir/Task_1.o -MF CMakeFiles/Task1Double.dir/Task_1.o.d -o CMakeFiles/Task1Double.dir/Task_1.o -c /home/d.kulev/Task_1/CMake/Task_1.cpp
+CMakeFiles/Task1Double.dir/Task_1.cpp.o: CMakeFiles/Task1Double.dir/flags.make
+CMakeFiles/Task1Double.dir/Task_1.cpp.o: Task_1.cpp
+CMakeFiles/Task1Double.dir/Task_1.cpp.o: CMakeFiles/Task1Double.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/d.kulev/Task_1/CMake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Task1Double.dir/Task_1.cpp.o"
+	/opt/nvidia/hpc_sdk/Linux_x86_64/23.11/compilers/bin/nvc++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Task1Double.dir/Task_1.cpp.o -MF CMakeFiles/Task1Double.dir/Task_1.cpp.o.d -o CMakeFiles/Task1Double.dir/Task_1.cpp.o -c /home/d.kulev/Task_1/CMake/Task_1.cpp
 
-CMakeFiles/Task1Double.dir/Task_1.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Task1Double.dir/Task_1.i"
-	/opt/nvidia/hpc_sdk/Linux_x86_64/23.11/compilers/bin/nvc++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/d.kulev/Task_1/CMake/Task_1.cpp > CMakeFiles/Task1Double.dir/Task_1.i
+CMakeFiles/Task1Double.dir/Task_1.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Task1Double.dir/Task_1.cpp.i"
+	/opt/nvidia/hpc_sdk/Linux_x86_64/23.11/compilers/bin/nvc++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/d.kulev/Task_1/CMake/Task_1.cpp > CMakeFiles/Task1Double.dir/Task_1.cpp.i
 
-CMakeFiles/Task1Double.dir/Task_1.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Task1Double.dir/Task_1.s"
-	/opt/nvidia/hpc_sdk/Linux_x86_64/23.11/compilers/bin/nvc++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/d.kulev/Task_1/CMake/Task_1.cpp -o CMakeFiles/Task1Double.dir/Task_1.s
+CMakeFiles/Task1Double.dir/Task_1.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Task1Double.dir/Task_1.cpp.s"
+	/opt/nvidia/hpc_sdk/Linux_x86_64/23.11/compilers/bin/nvc++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/d.kulev/Task_1/CMake/Task_1.cpp -o CMakeFiles/Task1Double.dir/Task_1.cpp.s
 
 # Object files for target Task1Double
 Task1Double_OBJECTS = \
-"CMakeFiles/Task1Double.dir/Task_1.o"
+"CMakeFiles/Task1Double.dir/Task_1.cpp.o"
 
 # External object files for target Task1Double
 Task1Double_EXTERNAL_OBJECTS =
 
-Task1Double: CMakeFiles/Task1Double.dir/Task_1.o
+Task1Double: CMakeFiles/Task1Double.dir/Task_1.cpp.o
 Task1Double: CMakeFiles/Task1Double.dir/build.make
 Task1Double: CMakeFiles/Task1Double.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/d.kulev/Task_1/CMake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable Task1Double"
