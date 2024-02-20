@@ -3,6 +3,7 @@
 #include <cmath>
 #include <math.h>
 #include <iomanip>
+#include <memory>
 #define LEN 10000000
 
 #if FL == 1
@@ -13,24 +14,20 @@ using my_type = double;
 #define sinus(x) sin(x)
 #endif
 
-using namespace std;
-
-my_type sin_array(my_type* arr)
+my_type sin_array(std::shared_ptr<my_type[]> arr)
 {
     my_type sum = 0;
-    my_type sinus;
     for (int i = 0; i < LEN; i++)
     {
-        sinus = sinus((2 * M_PI) * (i / (LEN - 1)));
-        arr[i] = sinus;
-        sum += sinus;
+        arr[i] = sinus((2 * M_PI) * ((my_type)i / LEN));
+        sum += arr[i];
     }
     return sum;
 }
 
 int main(int argc, char* argv[])
 {
-    my_type* arr = new my_type[LEN];
-    cout << fixed << setprecision(30) << sin_array(arr) << endl;
+    std::shared_ptr<my_type[]> arr(new my_type[LEN]);
+    std::cout << std::fixed << std::setprecision(30) << sin_array(arr) << std::endl;
     return 0;
 }

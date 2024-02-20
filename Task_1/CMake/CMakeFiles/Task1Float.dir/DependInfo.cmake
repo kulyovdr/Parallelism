@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/d.kulev/Task_1/CMake/Task_1.cpp" "CMakeFiles/Task1Float.dir/Task_1.o" "gcc" "CMakeFiles/Task1Float.dir/Task_1.o.d"
+  "/home/d.kulev/Task_1/CMake/Task_1.cpp" "CMakeFiles/Task1Float.dir/Task_1.cpp.o" "gcc" "CMakeFiles/Task1Float.dir/Task_1.cpp.o.d"
   )
 
 # Targets to which this target links.

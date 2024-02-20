@@ -117,32 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Task1Double
+# Target rules for targets named Task1Float
 
 # Build rule for target.
-Task1Double: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Task1Double
-.PHONY : Task1Double
+Task1Float: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Task1Float
+.PHONY : Task1Float
 
 # fast build rule for target.
-Task1Double/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/build
-.PHONY : Task1Double/fast
+Task1Float/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Float.dir/build.make CMakeFiles/Task1Float.dir/build
+.PHONY : Task1Float/fast
 
-# target to build an object file
-Task_1.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.o
+Task_1.o: Task_1.cpp.o
 .PHONY : Task_1.o
 
-# target to preprocess a source file
-Task_1.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.i
+# target to build an object file
+Task_1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Float.dir/build.make CMakeFiles/Task1Float.dir/Task_1.cpp.o
+.PHONY : Task_1.cpp.o
+
+Task_1.i: Task_1.cpp.i
 .PHONY : Task_1.i
 
-# target to generate assembly for a file
-Task_1.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Double.dir/build.make CMakeFiles/Task1Double.dir/Task_1.s
+# target to preprocess a source file
+Task_1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Float.dir/build.make CMakeFiles/Task1Float.dir/Task_1.cpp.i
+.PHONY : Task_1.cpp.i
+
+Task_1.s: Task_1.cpp.s
 .PHONY : Task_1.s
+
+# target to generate assembly for a file
+Task_1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Task1Float.dir/build.make CMakeFiles/Task1Float.dir/Task_1.cpp.s
+.PHONY : Task_1.cpp.s
 
 # Help Target
 help:
@@ -152,7 +161,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Task1Double"
+	@echo "... Task1Float"
 	@echo "... Task_1.o"
 	@echo "... Task_1.i"
 	@echo "... Task_1.s"
