@@ -16,7 +16,6 @@ const std::chrono::duration<double> itera(std::vector<double> A, std::vector<dou
 {
     const auto start{std::chrono::steady_clock::now()};
     double criter = 0;
-    std::vector<double> AX(n);
 
     double AXi = 0; //A[i] * X[i]
     double err = 0;
@@ -30,12 +29,12 @@ const std::chrono::duration<double> itera(std::vector<double> A, std::vector<dou
         #pragma omp parallel for num_threads(numThr) private(AXi, err, err_dnm, AXMinusB)
         for (int i = 0; i < n; i++)
         {
-            AX[i] = 0;
+            AXi = 0;
             for (int j = 0; j < n; j++)
             {
-                AX[i] += A[i * n + j] * X[i];
+                AXi += A[i * n + j] * X[i];
             }
-            AXMinusB = AX[i] - B[i];
+            AXMinusB = AXi - B[i];
             X[i] = X[i] - tau * AXMinusB;
 
             err1 += AXMinusB * AXMinusB;
@@ -43,7 +42,6 @@ const std::chrono::duration<double> itera(std::vector<double> A, std::vector<dou
         }
 
         criter = err1 / err_dnm1;
-        //std::cout << criter << std::endl;
     } while (criter > eps);
     const auto end{std::chrono::steady_clock::now()};
     const std::chrono::duration<double> elapsed_seconds{end - start};
@@ -74,10 +72,6 @@ int main(int argc, char *argv[])
         numThr = i;
         std::fill(X.begin(), X.end(), 0);
         const std::chrono::duration<double> time = itera(A, B, X);
-        // for (auto j : X)
-        // {
-        //     std::cout << j << std::endl;
-        // }
 
         std::cout << i << " threads: " << time.count() << " seconds" << std::endl;
     }
