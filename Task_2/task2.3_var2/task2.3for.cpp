@@ -7,7 +7,7 @@
 #include <numeric>
 
 int numThr = 1;
-const double n = 100;
+const int n = 1000;
 const double tau = 0.01;
 const double eps = 0.00001;
 
@@ -27,32 +27,21 @@ const std::chrono::duration<double> itera(std::vector<double> A, std::vector<dou
     {
         double err1 = 0;
         double err_dnm1 = 0;
-        #pragma omp parallel num_threads(numThr) private(AXi, err, err_dnm, AXMinusB)
+        #pragma omp parallel for num_threads(numThr) private(AXi, err, err_dnm, AXMinusB)
+        for (int i = 0; i < n; i++)
         {
-            int nthreads = omp_get_num_threads();
-            int threadid = omp_get_thread_num();
-            int items_per_thread = n / nthreads;
-            int lb = threadid * items_per_thread;
-            int ub = (threadid == nthreads - 1) ? (n - 1) : (lb + items_per_thread - 1);
-
-            for (int i = lb; i <= ub; i++)
+            AX[i] = 0;
+            for (int j = 0; j < n; j++)
             {
-                AX[i] = 0;
-                for (int j = 0; j < n; j++)
-                {
-                    AX[i] += A[i * n + j] * X[i];
-                }
-                AXMinusB = AX[i] - B[i];
-                X[i] = X[i] - tau * AXMinusB;
-
-                err += AXMinusB * AXMinusB;
-                err_dnm += B[i] * B[i];
+                AX[i] += A[i * n + j] * X[i];
             }
-            #pragma omp atomic
-            err1 += err;
-            #pragma omp atomic
-            err_dnm1 += err_dnm;
+            AXMinusB = AX[i] - B[i];
+            X[i] = X[i] - tau * AXMinusB;
+
+            err1 += AXMinusB * AXMinusB;
+            err_dnm1 += B[i] * B[i];
         }
+
         criter = err1 / err_dnm1;
         //std::cout << criter << std::endl;
     } while (criter > eps);
