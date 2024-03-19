@@ -7,9 +7,9 @@
 #include <numeric>
 
 int numThr = 1;
-const double n = 1000;
+const double n = 2000;
 const double tau = 0.01;
-const double eps = 0.00001;
+const double eps = 0.000001;
 
 //Сам алгоритм решения задачи по методу простой итерации
 const std::chrono::duration<double> itera(std::vector<double>& A, std::vector<double>& B, std::vector<double>& X)
@@ -76,15 +76,30 @@ int main(int argc, char *argv[])
     std::vector<double> B(n);
     std::fill(B.begin(), B.end(), n + 1);
 
+        //Инициализация вектора X
+    std::vector<double> X(n);
+
     for (auto i : threads)
     {
         numThr = i;
-        //Инициализация вектора X
-        std::vector<double> X(n);
-        std::fill(X.begin(), X.end(), 0);
-        const std::chrono::duration<double> time = itera(A, B, X);
+        for (int j = 0; j < 5; j++)
+        {
+            std::fill(X.begin(), X.end(), 0);
+            const std::chrono::duration<double> time = itera(A, B, X);
 
-        std::cout << i << " threads: " << time.count() << " seconds" << std::endl;
+            std::cout << i << " threads: " << time.count() << " seconds" << std::endl;
+
+            bool rrr = true;
+            for (auto j : X)
+            {
+                if (j < 0.9999 || j > 1.00001)
+                {
+                    std::cout << "false" << std::endl;
+                    break;
+                }
+                //std::cout << j << std::endl;
+            }
+        }
     }
 
     return 0;
