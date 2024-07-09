@@ -5,6 +5,7 @@ import cv2
 import logging
 import sys
 import queue
+import numpy
 
 
 
@@ -26,7 +27,7 @@ class SensorX(Sensor):
 
 
 class SensorCam(Sensor):
-    def __init__(self, cam_name, resolution):
+    def __init__(self, cam_name: str, resolution: tuple[int, int]):
         if cam_name == 'default':
             self.cam = cv2.VideoCapture(0)
         else:
@@ -42,11 +43,11 @@ class SensorCam(Sensor):
 
 
 class WindowImage:
-    def __init__(self, freq):
+    def __init__(self, freq: int):
         self.freq = freq
         cv2.namedWindow("window")
 
-    def show(self, img, s1, s2, s3):
+    def show(self, img: numpy.ndarray, s1: SensorX, s2: SensorX, s3: SensorX):
         x = 50
         y = 50
         text1 = f"Sensor 1: {s1}"
@@ -61,12 +62,12 @@ class WindowImage:
         cv2.destroyWindow("window")
 
 
-def process(queue, sensor, event):
+def process(queue: queue.Queue, sensor: SensorX, stop_event: threading.Event):
     while True:
         new_sens = sensor.get()
         if queue.empty():
             queue.put(new_sens)
-        if event.is_set():
+        if stop_event.is_set():
             break
 
 
@@ -97,10 +98,10 @@ if __name__ == '__main__':
     queue2 = queue.Queue()
     queue3 = queue.Queue()
 
-    event = threading.Event()
-    thread1 = threading.Thread(target=process, args=(queue1, sensor1, event))
-    thread2 = threading.Thread(target=process, args=(queue2, sensor2, event))
-    thread3 = threading.Thread(target=process, args=(queue3, sensor3, event))
+    stop_event = threading.Event()
+    thread1 = threading.Thread(target=process, args=(queue1, sensor1, stop_event))
+    thread2 = threading.Thread(target=process, args=(queue2, sensor2, stop_event))
+    thread3 = threading.Thread(target=process, args=(queue3, sensor3, stop_event))
 
     thread1.start()
     thread2.start()
@@ -117,7 +118,7 @@ if __name__ == '__main__':
         ret, frame = camera.get()
         if not ret or not camera.cam.isOpened() or not camera.cam.grab():
             logging.error('The camera is out of order')
-            event.set()
+            stop_event.set()
             thread1.join()
             thread2.join()
             thread3.join()
@@ -127,7 +128,7 @@ if __name__ == '__main__':
         time.sleep(1 / window.freq)
 
         if cv2.waitKey(1) == ord('q'):
-            event.set()
+            stop_event.set()
             thread1.join()
             thread2.join()
             thread3.join()
