@@ -27,11 +27,8 @@ class SensorX(Sensor):
 
 
 class SensorCam(Sensor):
-    def __init__(self, cam_name: str, resolution: tuple[int, int]):
-        if cam_name == 'default':
-            self.cam = cv2.VideoCapture(0)
-        else:
-            self.cam = cv2.VideoCapture(int(cam_name))
+    def __init__(self, cam_name: int, resolution: tuple[int, int]):
+        self.cam = cv2.VideoCapture(cam_name)
         self.cam.set(3, resolution[0])
         self.cam.set(4, resolution[1])
 
@@ -76,7 +73,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     split_char = '*'
-    parser.add_argument('--cam', type=str, default='default', help='Camera name')
+    parser.add_argument('--cam', type=int, default=0, help='Camera name')
     parser.add_argument('--res', type=str, default='1280' + split_char + '720', help='Camera resolution')
     parser.add_argument('--freq', type=int, default=60, help='Output frequency')
     args = parser.parse_args()
@@ -90,8 +87,6 @@ if __name__ == '__main__':
 
     if not camera.cam.isOpened():
         logging.error('There is no camera with that name in the system')
-        camera.release()
-        window.close()
         sys.exit()
 
     queue1 = queue.Queue()
