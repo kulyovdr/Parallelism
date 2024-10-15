@@ -1,153 +1,183 @@
 #include <iostream>
 #include <thread>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
+#include <unordered_map>
 #include <cmath>
 #include <fstream>
 #include <random>
-//#include <functional>
-#include <future>
-#include <vector>
+#include <mutex>
+#include <functional>
+#include <string>
+#include <cstring>
+
 
 enum class Type
 {
     Sin, Sqrt, Pow
 };
 
-// Task class to store task information
 class Task {
 public:
-    int id;
+    Type type;
     double arg;
-    double result;
-    std::packaged_task<double(double)> task;
-};
+    int iter;
+    int arg2 = 0;
 
-// Server class template
-class Server {
-private:
-    std::queue<Task> taskQueue;
-    std::vector<Task> results;
-    std::mutex mut;
-    std::condition_variable cv;
-    std::thread serverThread;
+    Task() : arg2(0) {}
 
-    bool isRunning = true;
-
-    void mainLoop()
+    Task(Type typ, int iterations)
     {
-        while (isRunning)
-        {
-            Task task;
-            
-            std::unique_lock<std::mutex> u_lock{mut, std::defer_lock};
-            cv.wait(u_lock, [&] { return !taskQueue.empty() || !isRunning; });
-
-            u_lock.lock();
-            task = std::move(taskQueue.front());
-            taskQueue.pop();
-            u_lock.unlock();
-
-            std::future<double> res = task.task.get_future();
-            task.task(task.arg);
-            task.result = res.get();
-
-            u_lock.lock();
-            results.push_back(task);
-            u_lock.unlock();
-        }
+        type = typ;
+        iter = iterations;
     }
 
+    Task(Type typ, double argument, int iterations, int argument2)
+    {
+        type = typ;
+        arg = argument;
+        iter = iterations;
+        arg2 = argument2;
+    }
+};
+
+template<typename T>
+class Server {
 public:
+    Server() : running(true) {}
+
     void start()
     {
-        serverThread = std::thread(&Server::mainLoop, this); 
+        thread_ = std::thread(&Server::run, this);
     }
 
     void stop()
     {
-        isRunning = false;
-        cv.notify_all();
-        serverThread.join();
+        running = false;
+        thread_.join();
     }
 
     size_t add_task(Task task)
     {
-        std::unique_lock<std::mutex> u_lock(mut);
-        task.id = results.size();
-        taskQueue.push(task);
-        cv.notify_one();
-        return task.id;
+        std::lock_guard<std::mutex> lock(mutex_);
+        tasks_[task_id_] = task;
+        return task_id_++;
     }
 
-    Task request_result(int id_res)
+    T request_result(size_t id)
     {
-        std::unique_lock<std::mutex> u_lock(mut);
-        cv.wait(u_lock, [&] { return results.size() > id_res; });
-        return std::move(results[id_res]);
+        while (true)
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (results_.find(id) != results_.end())
+            {
+                T result = results_[id];
+                results_.erase(id);
+                return result;
+            }
+        }
+    }
+
+private:
+    std::thread thread_;
+    std::unordered_map<size_t, Task> tasks_;
+    std::unordered_map<size_t, T> results_;
+    size_t task_id_ = 0;
+    std::mutex mutex_;
+    bool running;
+
+    void run()
+    {
+        while (running)
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            for (auto& task : tasks_)
+            {
+                T result;
+                if(task.second.type == Type::Sin)
+                {
+                    result = std::sin(task.second.arg);
+                }
+                else if(task.second.type == Type::Sqrt)
+                {
+                    result = std::sqrt(task.second.arg);
+                }
+                else
+                {
+                    result = std::pow(task.second.arg, task.second.arg2);
+                }
+                results_[task.first] = result;
+            }
+            tasks_.clear();
+        }
     }
 };
 
-// Client function to add tasks to server
-void client(Server& server, int numTasks, Type type, std::ofstream file) {
-    std::default_random_engine re;
-    std::uniform_real_distribution<double> dist(1, 100);
 
-    for (int i = 0; i < numTasks; ++i)
+void client(Server<double>& server, Task task, const std::string& filename) {
+    std::ofstream file(filename);
+    if (!file.is_open())
     {
-        Task task;
-        int id = 0;
-        Task result;
-        switch (type)
-        {
-            case Type::Sin:
-                task.task = std::packaged_task<double(double)>([](double x) {return std::sin(x);});
-                task.arg = dist(re);
-                id = server.add_task(std::move(task));
-                result = server.request_result(id);
-                file << "sin(" << result.arg << ") = " << result.result << std::endl;
-                break;
-            case Type::Sqrt:
-                task.task = std::packaged_task<double(double)>([](double x) {return std::sqrt(x);});
-                task.arg = dist(re);
-                id = server.add_task(std::move(task));
-                result = server.request_result(id);
-                file << "sqrt(" << result.arg << ") = " << result.result << std::endl;
-                break;
-            case Type::Pow:
-                task.task = std::packaged_task<double(double)>([](double x) {return std::pow(x, 2);});
-                task.arg = dist(re);
-                id = server.add_task(std::move(task));
-                result = server.request_result(id);
-                file << result.arg << "^2 = " << result.result << std::endl;
-                break;
-        }
+        std::cerr << "File not found" << filename << std::endl;
+        return;
     }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<double> dist(0.0, 10.0);
+    std::uniform_int_distribution<int> dist2(0, 10);
+
+    for (size_t i = 0; i < task.iter; ++i)
+    {
+        double argument = dist(gen);
+        int argument2 = 0;
+        if (task.type == Type::Pow)
+        {
+            argument2 = dist2(gen); 
+        }
+
+        Task current_task(task.type, argument, task.iter, argument2);
+        size_t task_id = server.add_task(current_task);
+        double result = server.request_result(task_id);
+
+        file << "ID: " << task_id << " arg1: " << argument;
+        if (task.type == Type::Pow)
+        {
+            file << " arg2: " << argument2;
+        }
+        file << " Result: " << result << std::endl;
+    }
+
+    file.close();
 }
 
-int main() {
-    Server server;
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        std::cerr << "Enter the number of tasks" << std::endl;
+        return 1;
+    }
+
+    Task client1(Type::Sin, std::stoi(argv[1]));
+    std::string file1 = "sin.txt";
+
+    Task client2(Type::Sqrt, std::stoi(argv[1]));
+    std::string file2 = "sqrt.txt";
+
+    Task client3(Type::Pow, std::stoi(argv[1]));
+    std::string file3 = "pow.txt";
+
+    Server<double> server;
     server.start();
 
-    int countTasks = 200;
+    std::thread client_serv1(client, std::ref(server), client1, file1);
+    std::thread client_serv2(client, std::ref(server), client2, file2);
+    std::thread client_serv3(client, std::ref(server), client3, file3);
 
-    std::ofstream file1("sin_results.txt");
-    std::ofstream file2("sqrt_results.txt");
-    std::ofstream file3("pow_results.txt");
-
-    std::thread client1(client, std::ref(server), countTasks, Type::Sin, file1);
-    std::thread client2(client, std::ref(server), countTasks, Type::Sqrt, file2);
-    std::thread client3(client, std::ref(server), countTasks, Type::Pow, file3);
-
-    client1.join();
-    client2.join();
-    client3.join();
-
-    file1.close();
-    file2.close();
-    file3.close();
+    client_serv1.join();
+    client_serv2.join();
+    client_serv3.join();
 
     server.stop();
+
     return 0;
 }
